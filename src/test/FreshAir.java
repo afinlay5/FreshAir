@@ -40,7 +40,7 @@ public class FreshAir extends Application {
 	public static void home (String[] args) { FreshAir.launch(args); }
 
 	/*  Connect to the API first.  */
-	private static final String AirVisual_AQI_API = "https://";
+	private static final String AirVisual_AQI_API = "https://http://api.airvisual.com/v2/city?city=Los%20Angeles&state=California&country=USA&key=fQryFDkwpvMtiZ8A7";
 	static { 
 		try { new URL(AirVisual_AQI_API).openConnection().connect(); }
 		catch (Exception e) { ; };
