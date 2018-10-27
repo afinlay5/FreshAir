@@ -59,9 +59,10 @@ public class FreshAir extends Application {
 	private static Background bkg;
 	private static Image app;
 	private static Image middleImg = new Image ("bkg.png", FreshAir.width,FreshAir.height*.95, false, true, true );
-	private static ImageView home, back, divider, fwd;
+	private static ImageView home, back, fwd;
 	private static Button bHome = new Button(), bBack = new Button(), bFwd = new Button();
 	private static Navigation navigation;
+	private static String[] pt;
 
 
 	/* Launch JavaFX application */
@@ -139,7 +140,6 @@ public class FreshAir extends Application {
 
 		home = new ImageView ( new Image(getClass().getResource("home.png").toExternalForm(),20,20,true,true)); bHome.setGraphic(home);
 		back = new ImageView ( new Image(getClass().getResource("bck.png").toExternalForm()) ); bBack.setGraphic(back);
-		// divider = new Image(getClass().getResource("div.png").toExternalForm());
 		fwd = new ImageView ( new Image(getClass().getResource("fwd.png").toExternalForm()) ); bFwd.setGraphic(fwd);
 		
 		Label lbl = new Label("Breathe in, Breathe fresh . . . ®");
@@ -149,13 +149,22 @@ public class FreshAir extends Application {
 		bottomRow.setCenter(lbl);
 		bottomRow.setRight( new HBox(bBack, bFwd)) ;
 
+		bBack.setDisable(true);
+
 		//Components -> SceneGraph
 		rootNode.getChildren().addAll(upperRow, bottomRow);
 
+		//Get prompt text
+		pt = search.getPromptText().split(", ");
+		pt[2]= pt[2].substring(0, pt[2].indexOf("."));
+
+		//UpstreamDataSource
+		UpstreamDataSource uds = new UpstreamDataSource();
+
         //Scene
         Scene mainScene = new Scene(rootNode, FreshAir.width, FreshAir.height); 
-        MapScene mapScene = new MapScene();
-        navigation = new Navigation (mainScene);//, mapScene);
+        MapScene mapScene = new MapScene(new BorderPane(), FreshAir.height, FreshAir.width, pt, new Button(), new Button(), new Button(), uds); //why was clone() not overriden?
+        navigation = new Navigation (main, mainScene, mapScene);
         
    		// Restrict resizeable
 		main.setResizable(false);
@@ -165,7 +174,16 @@ public class FreshAir extends Application {
 
 		/*Component Event Handling*/
 		home.setOnMouseClicked(e -> { 
-				main.setScene(navigation.getSceneByIndex(0));
+				Navigation.getStage().setScene(Navigation.getSceneByIndex(0));
+			}
+		);
+		mainScene.setOnMouseClicked(e -> { 
+				lbl.requestFocus();
+			}
+		);
+
+		bFwd.setOnMouseClicked(e -> { 
+				navigation.advance();
 			}
 		);
 
