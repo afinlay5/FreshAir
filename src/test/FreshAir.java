@@ -39,6 +39,7 @@ import javafx.scene.text.Font;
 // import javafx.scene.paint.Paint;
 import javafx.stage.StageStyle;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.layout.CornerRadii;
 import javafx.application.Application;
@@ -51,21 +52,11 @@ import javafx.scene.layout.BackgroundPosition;
 
 
 public class FreshAir extends Application {
-	private static int height = 668, width =1024;
-	private static final Background bkg;
+	private static int height = 620, width =1024;
+	private static Background bkg;
+	private static Image app;
+	private static Image middleImg = new Image ("bkg.png", FreshAir.width,FreshAir.height*.9, false, true, true );
 
-	static {
-		bkg = new Background (
-			 		new BackgroundImage(
-						new Image("bkg.jpg", true),
-						BackgroundRepeat.NO_REPEAT,
-						BackgroundRepeat.NO_REPEAT,
-						BackgroundPosition.CENTER,
-						// BackgroundSize(double width, double height, boolean widthAsPercentage, boolean heightAsPercentage, boolean contain, boolean cover)
-						BackgroundSize.DEFAULT
-					)
-		);
-	}
 
 	/* Launch JavaFX application */
 	public static void home (String[] args) { FreshAir.launch(args); }
@@ -89,7 +80,12 @@ public class FreshAir extends Application {
 		/* Home Screen */
 		
         //Give the stage a title.
-		home.setTitle("FreshAir® - Clean Air Map");
+		home.setTitle("FreshAir® - Clean Air Map!");
+
+
+		// Provide Icon
+		app = new Image(getClass().getResource("app.png").toExternalForm());
+		home.getIcons().add(app);
 
 		// Provide Icon
 		// home.getIcons().add(app);
@@ -106,23 +102,23 @@ public class FreshAir extends Application {
 		topRow.getChildren().add(lbl);
 		topRow.setAlignment(Pos.CENTER);
 		// topRow.setBackground(	new Background(	new BackgroundFill(Paint.valueOf("#9cdef6"), CornerRadii.EMPTY, Insets.EMPTY ) ) );
-		topRow.setBackground(	new Background(	new BackgroundFill(Color.rgb(156,206, 246, 0.20), CornerRadii.EMPTY, Insets.EMPTY ) ) ); 
+		topRow.setBackground(	new Background(	new BackgroundFill(Color.rgb(156,206, 246, 0.35), CornerRadii.EMPTY, Insets.EMPTY ) ) ); 
 		topRow.setMinHeight(FreshAir.height*.06);
 		topRow.setPrefHeight(FreshAir.height*.07);
 		topRow.setMaxHeight(FreshAir.height*.10);
 
 
 		//MiddleRow
-		HBox middleRow = new HBox();
-		middleRow.setBackground(bkg);
+		ImageView middleImgV = new ImageView(FreshAir.middleImg);
+		HBox middleRow = new HBox(middleImgV);
 
 
 		//BottomRow
 		HBox bottomRow = new HBox();
-		bottomRow.setMinHeight(FreshAir.height*.02);
-		bottomRow.setPrefHeight(FreshAir.height*.04);
-		bottomRow.setMaxHeight(FreshAir.height*.06);
-		bottomRow.setBackground( new Background (new BackgroundFill(Color.LIGHTGREY, CornerRadii.EMPTY, Insets.EMPTY ) ) ); 
+		bottomRow.setMinHeight(FreshAir.height*.01);
+		bottomRow.setPrefHeight(FreshAir.height*.03);
+		bottomRow.setMaxHeight(FreshAir.height*.04);
+		bottomRow.setBackground( new Background (new BackgroundFill(Color.GREY, CornerRadii.EMPTY, Insets.EMPTY ) ) ); 
 
 
 		//Components -> SceneGraph
@@ -136,7 +132,7 @@ public class FreshAir extends Application {
 		home.setResizable(false);
 
 		//Make Transparent
-		// home.initStyle(StageStyle.UNDECORATED);
+		home.initStyle(StageStyle.UNDECORATED);
 
         //Set Scene, Show stage
         home.setScene(scene);
