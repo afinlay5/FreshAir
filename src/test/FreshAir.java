@@ -32,10 +32,41 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
+// import javafx.scene.paint.Paint;
+import javafx.stage.StageStyle;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.layout.CornerRadii;
 import javafx.application.Application;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundPosition;
+
 
 public class FreshAir extends Application {
+	private static int height = 668, width =1024;
+	private static final Background bkg;
+
+	static {
+		bkg = new Background (
+			 		new BackgroundImage(
+						new Image("bkg.jpg", true),
+						BackgroundRepeat.NO_REPEAT,
+						BackgroundRepeat.NO_REPEAT,
+						BackgroundPosition.CENTER,
+						// BackgroundSize(double width, double height, boolean widthAsPercentage, boolean heightAsPercentage, boolean contain, boolean cover)
+						BackgroundSize.DEFAULT
+					)
+			);
+	}
+
 	/* Launch JavaFX application */
 	public static void home (String[] args) { FreshAir.launch(args); }
 
@@ -64,18 +95,44 @@ public class FreshAir extends Application {
 		// home.getIcons().add(app);
 
 		//Root Node
-		VBox rootNode = new VBox(3.0);
-		rootNode.setAlignment(Pos.CENTER);
+		VBox rootNode = new VBox();
+
+		/*Components*/
+
+		//TopRow
+		HBox topRow = new HBox();
+		Label lbl = new Label("Fresh Air");
+		lbl.setFont(Font.font("Simplex", 25.14));
+		topRow.getChildren().add(lbl);
+		topRow.setAlignment(Pos.CENTER);
+		// topRow.setBackground(	new Background(	new BackgroundFill(Paint.valueOf("#9cdef6"), CornerRadii.EMPTY, Insets.EMPTY ) ) );
+		topRow.setBackground(	new Background(	new BackgroundFill(Color.rgb(156,206, 246, 0.20), CornerRadii.EMPTY, Insets.EMPTY ) ) ); 
+		topRow.setMinHeight(FreshAir.height*.08);
+		topRow.setPrefHeight(FreshAir.height*.10);
+		topRow.setMaxHeight(FreshAir.height*.12);
+
+
+		//MiddleRow
+		HBox middleRow = new HBox();
+		middleRow.setBackground(bkg);
+
+
+		//BottomRow
+		HBox bottomRow = new HBox();
+
 
 		//Components -> SceneGraph
-		// rootNode.getChildren().addAll()
+		rootNode.getChildren().addAll(topRow, middleRow, bottomRow);
 
         //Scene
-        Scene scene = new Scene(rootNode, 1024, 668); 
+        Scene scene = new Scene(rootNode, FreshAir.width, FreshAir.height); 
 
 
    		//Restrict resizeable
 		home.setResizable(false);
+
+		//Make Transparent
+		// home.initStyle(StageStyle.UNDECORATED);
 
         //Set Scene, Show stage
         home.setScene(scene);
