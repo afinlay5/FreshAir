@@ -152,8 +152,14 @@ class MapScene extends Scene {
 		root.setBottom(bottomRow);
 
 		/*Component Event Handling*/
-		home.setOnMouseClicked(e -> { 
-				main.setScene(Navigation.getSceneByIndex(0));
+		bHome.setOnMouseClicked(e -> { 
+				Navigation.goHome();
+			}
+		);
+		
+
+		bBack.setOnMouseClicked(e -> { 
+				Navigation.retreat();
 			}
 		);
 

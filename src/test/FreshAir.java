@@ -150,6 +150,7 @@ public class FreshAir extends Application {
 		bottomRow.setRight( new HBox(bBack, bFwd)) ;
 
 		bBack.setDisable(true);
+		bHome.setDisable(true);
 
 		//Components -> SceneGraph
 		rootNode.getChildren().addAll(upperRow, bottomRow);
@@ -173,10 +174,6 @@ public class FreshAir extends Application {
 		main.initStyle(StageStyle.UNDECORATED);
 
 		/*Component Event Handling*/
-		home.setOnMouseClicked(e -> { 
-				Navigation.getStage().setScene(Navigation.getSceneByIndex(0));
-			}
-		);
 		mainScene.setOnMouseClicked(e -> { 
 				lbl.requestFocus();
 			}

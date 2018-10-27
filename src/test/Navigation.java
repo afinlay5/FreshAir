@@ -34,57 +34,100 @@ import javafx.stage.Stage;
 import java.util.ListIterator;
 import java.util.Collections;
 
-class Navigation {
-	private final List<Scene> scenes;
-	private final ListIterator<Scene> iter;
-	private final Stage app;
-	private Scene currentScene;
+final class Navigation {
+	private static List<Scene> scenes;
+	private static ListIterator<Scene> iter;
+	private static Stage app;
+	private static Scene currentScene;
+	private boolean exists = false;
 
 	Navigation (Stage stage, Scene ... scenes) {
-		//Fixed Size, unmodifiable ListView
-		this.scenes = Collections.unmodifiableList(Arrays.asList(scenes[0], scenes[1])); 
-		this.iter = this.scenes.listIterator();
-		this.currentScene = scenes[0];
-		this.iter.next();
-		this.app = stage;
+		if (exists)
+			throw new IllegalStateException("One such instance only.");
+		else {
+			//Fixed Size, unmodifiable ListView
+			this.scenes = Collections.unmodifiableList(Arrays.asList(scenes[0], scenes[1])); 
+			this.iter = this.scenes.listIterator();
+			this.currentScene = scenes[0];
+			this.app = stage;
+			this.exists = true;
+		}
 	}
 
 	public static Scene getSceneByIndex(int i) {
+		resolveCurrentScene();//temp crappy solution, maybe....certainly.
+
 		if (i>2) throw new IllegalStateException("Three scenes in this stage.");
 		else if (i<=0) throw new IllegalStateException("Three scenes in this stage.");
-		else return scenes.get(i-1); //Weakeness: The caller has to be responsible in switching scenes
-		resolveCurrentScene();//temp crappy solution, maybe
+		else {
+			Navigation.currentScene = scenes.get(i-1);
+			return scenes.get(i-1); //Weakeness: The caller has to be responsible in switching scenes
+		}
 	};
 
-	public void resolveCurrentScene () {
-		if (this.app.getScene().equals(currentScene))
+	public static void resolveCurrentScene () {
+		//horribly inefficient to do this nonsense every time (or at all)
+
+		Scene scene = (Scene) (Navigation.app.getScene());
+
+		if (scene.equals(currentScene))
 			return;
-		// else if (this.)
+		else {
+			//walk baclk
+			while (iter.hasPrevious())
+				iter.previous();
+
+			iter.forEachRemaining( e -> {
+					if (e.equals(scene)) {
+						iter.previous();
+						return;
+					}
+				}
+			);
+		}
 	};
 
 	public ListIterator getIterator() {
 		return this.iter;
 	};
-	public Stage getStage() {
-		return this.app;
+	public static Stage getStage() {
+		return Navigation.app;
+	};
+	public static void goHome() {
+		Navigation.currentScene = scenes.get(0);
+		//walk the iterator backwards
+		while (iter.hasPrevious())
+			iter.previous();
+		app.setScene(Navigation.currentScene);
+		app.show();
 	};
 
-	public void advance () {
-		if (iter.hasNext()) {
+	public static void advance () {
+		resolveCurrentScene ();
+		if (iter.hasNext() && iter.nextIndex() != scenes.size()) { //this check is probably not necessary?
+			iter.next();
 			Scene scene = iter.next();
-			this.currentScene = scene;
-			this.app.setScene(scene);
-			this.app.show();
+			Navigation.currentScene = scene;
+			Navigation.app.setScene(scene);
+			Navigation.app.show();
+		}
+		else if (iter.nextIndex() == scenes.size() ) {
+			return;
 		}
 		else throw new IllegalStateException ("No such scene!");
 	};
 
-	public void retreat () {
-		if (iter.hasPrevious()) {
-			Scene scene = iter.previou();
-			this.currentScene = scene;
-			this.app.setScene(scene);
-			this.app.show();
+	public static void retreat () {
+		resolveCurrentScene ();
+		if (iter.hasPrevious() ) { 
+			iter.previous();
+			Scene scene = iter.previous();
+			Navigation.currentScene = scene;
+			Navigation.app.setScene(scene);
+			Navigation.app.show();
+		}
+		else if (iter.previousIndex() == -1) {
+
 		}
 		else throw new IllegalStateException ("No such scene!");
 	};
