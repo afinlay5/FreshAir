@@ -64,7 +64,7 @@ public class FreshAir extends Application {
 						// BackgroundSize(double width, double height, boolean widthAsPercentage, boolean heightAsPercentage, boolean contain, boolean cover)
 						BackgroundSize.DEFAULT
 					)
-			);
+		);
 	}
 
 	/* Launch JavaFX application */
@@ -107,9 +107,9 @@ public class FreshAir extends Application {
 		topRow.setAlignment(Pos.CENTER);
 		// topRow.setBackground(	new Background(	new BackgroundFill(Paint.valueOf("#9cdef6"), CornerRadii.EMPTY, Insets.EMPTY ) ) );
 		topRow.setBackground(	new Background(	new BackgroundFill(Color.rgb(156,206, 246, 0.20), CornerRadii.EMPTY, Insets.EMPTY ) ) ); 
-		topRow.setMinHeight(FreshAir.height*.08);
-		topRow.setPrefHeight(FreshAir.height*.10);
-		topRow.setMaxHeight(FreshAir.height*.12);
+		topRow.setMinHeight(FreshAir.height*.06);
+		topRow.setPrefHeight(FreshAir.height*.07);
+		topRow.setMaxHeight(FreshAir.height*.10);
 
 
 		//MiddleRow
@@ -119,6 +119,10 @@ public class FreshAir extends Application {
 
 		//BottomRow
 		HBox bottomRow = new HBox();
+		bottomRow.setMinHeight(FreshAir.height*.02);
+		bottomRow.setPrefHeight(FreshAir.height*.04);
+		bottomRow.setMaxHeight(FreshAir.height*.06);
+		bottomRow.setBackground( new Background (new BackgroundFill(Color.LIGHTGREY, CornerRadii.EMPTY, Insets.EMPTY ) ) ); 
 
 
 		//Components -> SceneGraph
