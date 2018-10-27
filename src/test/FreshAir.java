@@ -1,8 +1,8 @@
-/*
+/**
 =================================================================================
 MIT License
 
-Copyright (c) 2018 Adrian D. Finlay, Lunick Dorcelus, Yunier Alvarez, Cheddae Grant, Adrian Silva
+Copyright (c) 2018 Adrian D. Finlay, Lunick Dorcelus, Cheddae Grant, Adrian Silva
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 =================================================================================
-**/ 
+*/ 
 
-// package com.freshair;
+/* package com.freshair; */
 
 import java.net.URL;
 import javafx.stage.Stage;
@@ -39,7 +39,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
 import javafx.scene.control.Button;
-// import javafx.scene.paint.Paint;
 import javafx.stage.StageStyle;
 import javafx.scene.layout.Priority;
 import javafx.scene.image.Image;
@@ -62,6 +61,7 @@ public class FreshAir extends Application {
 	private static Image middleImg = new Image ("bkg.png", FreshAir.width,FreshAir.height*.95, false, true, true );
 	private static ImageView home, back, divider, fwd;
 	private static Button bHome = new Button(), bBack = new Button(), bFwd = new Button();
+	private static Navigation navigation;
 
 
 	/* Launch JavaFX application */
@@ -83,18 +83,14 @@ public class FreshAir extends Application {
     @Override // JavaFX Lifecycle Method #2
     public void start(Stage main) {
 
-		/* main Screen */
+		/* Main Screen */
 		
         //Give the stage a title.
 		main.setTitle("FreshAir® - Clean Air Map!");
 
-
 		// Provide Icon
 		app = new Image(getClass().getResource("app.png").toExternalForm());
 		main.getIcons().add(app);
-
-		// Provide Icon
-		// main.getIcons().add(app);
 
 		//Root Node
 		VBox rootNode = new VBox();
@@ -106,27 +102,32 @@ public class FreshAir extends Application {
 		upperRow.setMinHeight(FreshAir.height*.94);
 		upperRow.setPrefHeight(FreshAir.height*.94);
 		upperRow.setMaxHeight(FreshAir.height*.94);
+		upperRow.setAlignment(Pos.CENTER);
 		upperRow.setBackground(new Background (new BackgroundImage (FreshAir.middleImg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)) );
-
-		//upperInnerRow
-		HBox upperInnerRow = new HBox();
-		upperInnerRow.setAlignment(Pos.CENTER);
-		upperInnerRow.setBackground(  new Background(	new BackgroundFill(Color.rgb(230, 234, 244, 0.35), CornerRadii.EMPTY, Insets.EMPTY ) ) );
+	
+		//1
+		VBox content = new VBox(10.0);
+			
+		ImageView symbol = new ImageView ( new Image(getClass().getResource("symbol.png").toExternalForm(),50,50,true,true));
+		ImageView logo = new ImageView ( new Image(getClass().getResource("logo.png").toExternalForm(),150,150,true,true));
+		HBox logos = new HBox(symbol, logo);
+		logos.setSpacing(4.0);
+		logos.setAlignment(Pos.CENTER);
 
 		TextField search = new TextField (); 
 		search.setPromptText("Specify a City, Province, Country . . .");
-		search.setPrefColumnCount(20);
-		search.setAlignment(Pos.CENTER);	
-
-		upperInnerRow.getChildren().add(search);
-
+		search.setMinWidth(FreshAir.width*(1.0/4.0));
+		search.setFocusTraversable(false);
+				
+		content.getChildren().addAll(logos,search);
+		content.setAlignment(Pos.CENTER);
+		
 		//upperInnerRow -> upperRow
-		upperRow.getChildren().add(upperInnerRow);
+		upperRow.getChildren().addAll(content);
+		upperRow.setAlignment(Pos.CENTER);
 
 		//set alignment
 		upperRow.setAlignment(Pos.CENTER);
-
-
 
 		//BottomRow
 		BorderPane bottomRow = new BorderPane();
@@ -148,28 +149,32 @@ public class FreshAir extends Application {
 		bottomRow.setCenter(lbl);
 		bottomRow.setRight( new HBox(bBack, bFwd)) ;
 
-
 		//Components -> SceneGraph
 		rootNode.getChildren().addAll(upperRow, bottomRow);
 
         //Scene
-        Scene scene = new Scene(rootNode, FreshAir.width, FreshAir.height); 
-
-
+        Scene mainScene = new Scene(rootNode, FreshAir.width, FreshAir.height); 
+        MapScene mapScene = new MapScene();
+        navigation = new Navigation (mainScene);//, mapScene);
+        
    		// Restrict resizeable
-		// main.setResizable(false);
+		main.setResizable(false);
 
 		//Make Transparent
 		main.initStyle(StageStyle.UNDECORATED);
 
+		/*Component Event Handling*/
+		home.setOnMouseClicked(e -> { 
+				main.setScene(navigation.getSceneByIndex(0));
+			}
+		);
+
         //Set Scene, Show stage
-        main.setScene(scene);
+        main.setScene(mainScene);
         main.show();
 
 	};
 
  	// JavaFX Lifecycle Method #3
-    @Override public void stop () { 
-
-    };
+    @Override public void stop () { ; };
 }
