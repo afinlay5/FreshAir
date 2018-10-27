@@ -25,27 +25,132 @@ SOFTWARE.
 =================================================================================
 **/ 
 
+import java.io.File;
+import java.net.URI;
+import java.util.Scanner;
+import java.time.Duration;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.io.InputStream;
+import java.io.FileOutputStream​;
+import java.nio.charset.Charset;
+import java.net.Authenticator;
+import java.net.ProxySelector;
+import java.net.HttpURLConnection;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.StandardCopyOption;
+
 // package com.freshair;
 
 class UpstreamDataSource { 
 
-	public int getUSAAQI() {
-		return 0; 
+	private String[] args;
+	private final String API_ENDPOINT = "https://api.airvisual.com/v2/city?";
+    private final String API_ENDPOINT_KEY = "8MZjvqohdQroJEogm";
+    private int USAAQI, chinaAQI, temp, precip;
+    private double wind;
+
+	UpstreamDataSource () {
 	}
 
+	public void setArgs (String[] args) {
+		this.args = args;
+	}
+
+    public String call() {	
+    	String JSON="";
+    	try {
+	        //HTTP GET REQUEST
+	        HttpURLConnection HTTP_CLIENT= (HttpURLConnection) 
+	                            URI.create(
+	                                new StringBuilder(API_ENDPOINT)
+	                                .append("city=").append(args[0])
+	                                .append("&state=").append(args[1])
+	                                .append("&country=").append(args[2])
+	                                .append("&key=").append(API_ENDPOINT_KEY)
+	                                .toString())
+	                            .toURL()
+	                            .openConnection();
+	        HTTP_CLIENT.setRequestMethod("GET");
+
+	        
+	        //HTTP RESPONSE
+	        InputStream​ HTTP_RESPONSE = HTTP_CLIENT.getInputStream();
+	        Scanner scn = new Scanner(HTTP_RESPONSE);
+	        StringBuilder json_sb = new StringBuilder();
+	        while (scn.hasNext()) {
+	            json_sb.append(scn.next());
+	        }
+	        JSON = json_sb.toString();
+	      	/*  
+	        if (HTTP_CLIENT.getContentType().contains("json")) {
+	            InputStream​ stream_in = (InputStream​)(HTTP_CLIENT.getContent());
+	            FileOutputStream​ stream_out = new FileOutputStream​ (new File("response1.json"));
+	            stream_in.transferTo(stream_out);
+	            stream_in.close();
+	            stream_out.close();
+	        }
+	        else
+	            return; // lol!
+			*/
+	        // HTTP STATUS
+	        int statusCode = HTTP_CLIENT.getResponseCode();
+	        
+	        // HANDLE RESPONSE
+	        if (statusCode == 200 || statusCode == 201)
+	            System.out.println("Success -- REST API Call:   " + 
+	                args[1] + ", " + args[0] + " [" + args[2] +"]\n");
+	        else
+	            System.out.println("Failure! -- Pre-Java 11 REST API Call");
+	        
+	        System.out.println("---------------------------------");
+	    } catch (Exception e) { 
+	    	System.out.println(e);
+	    };
+
+	    return JSON;
+
+    };
+
+	public int getUSAAQI() {
+		return this.USAAQI;
+	}
 
 	public int getChinaAQI() {
-		return 0; 
+		return this.chinaAQI;
 	}
 
 	public int getTemp() {
-		return 0;
+		return this.temp;
 	}
 
-	public int getWind (){
-		return 0;
+	public double getWind (){
+		return this.wind;
 	}
 	public int getPrecip() {
-		return 0;
+		return this.precip;
 	}
+
+
+	public void setUSAAQI(int USAAQI) {
+		this.USAAQI = USAAQI;
+	}
+
+	public void setChinaAQI(int chinaAQI) {
+		this.chinaAQI = chinaAQI;
+	}
+
+	public void setTemp(int temp) {
+		this.temp = temp;
+	}
+
+	public void setWind (double wind){
+		this.wind = wind;
+	}
+	public void setPrecip(int precip) {
+		this.precip = precip;
+	}
+
+
 };

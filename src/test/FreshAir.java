@@ -155,16 +155,12 @@ public class FreshAir extends Application {
 		//Components -> SceneGraph
 		rootNode.getChildren().addAll(upperRow, bottomRow);
 
-		//Get prompt text
-		pt = search.getPromptText().split(", ");
-		pt[2]= pt[2].substring(0, pt[2].indexOf("."));
-
 		//UpstreamDataSource
-		UpstreamDataSource uds = new UpstreamDataSource();
+		UpstreamDataSource uds = new UpstreamDataSource(); //Do NOT use before supplying args - bad coding design
 
         //Scene
         Scene mainScene = new Scene(rootNode, FreshAir.width, FreshAir.height); 
-        MapScene mapScene = new MapScene(new BorderPane(), FreshAir.height, FreshAir.width, pt, new Button(), new Button(), new Button(), uds); //why was clone() not overriden?
+        MapScene mapScene = new MapScene(new BorderPane(), FreshAir.height, FreshAir.width, new Button(), new Button(), new Button(), uds); //why was clone() not overriden?
         navigation = new Navigation (main, mainScene, mapScene);
         
    		// Restrict resizeable
@@ -184,9 +180,37 @@ public class FreshAir extends Application {
 			}
 		);
 
+		search.setOnKeyPressed ( ke ->  {
+			if (ke.getCode().equals(javafx.scene.input.KeyCode.ENTER)) {
+				//Get prompt text
+				String[] pt = new String[3];
+				pt[0] = search.getText().split(", ")[0];
+				pt[1] = search.getText().split(", ")[1];
+				pt[2] = search.getText().split(", ")[2];
+
+				uds.setArgs(pt);
+				String json = uds.call(); 		
+
+				System.out.println(json);
+				uds.setUSAAQI(	 Integer.valueOf (json.substring(  (json.indexOf("aqius\":") + "aqius\":".length()), json.indexOf(",\"mainus")	) ) );
+				uds.setChinaAQI(	 Integer.valueOf (json.substring(  (json.indexOf("aqicn\":") + "aqicn\":".length()), json.indexOf(",\"maincn")	) ) );
+				uds.setTemp(	Integer.valueOf (json.substring(  (json.indexOf("tp\":") + "tp\":".length()), json.indexOf(",\"wd\"")	) ) );
+				uds.setWind(	 Double.valueOf (json.substring(  (json.indexOf("\"ws\":") + "\"ws\":".length()), json.indexOf("},\"poll")	) ) );
+				uds.setPrecip(	 Integer.valueOf (json.substring(  (json.indexOf("pr\":") + "pr\":".length()), json.indexOf(",\"tp")	) ) );
+				mapScene.setup(pt);
+
+				navigation.advance();
+
+
+
+			}
+		}
+		);
+
         //Set Scene, Show stage
         main.setScene(mainScene);
         main.show();
+        
 
 	};
 

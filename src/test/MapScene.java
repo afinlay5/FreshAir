@@ -47,14 +47,14 @@ import javafx.scene.layout.CornerRadii;
 class MapScene extends Scene {
 	private Label logo;
 	private final int height, width;
-	private final TextField city, province, country;
+	private TextField city, province, country;
 	private ImageView glass;
 	private static ImageView home, back, fwd;
 	private final UpstreamDataSource uds;
 	private final Button bFwd, bBack, bHome;
 	private final BorderPane root;
 	
-	MapScene (BorderPane root, int height, int width, String[] pt, Button bFwd, Button bBack, Button bHome, UpstreamDataSource uds) {
+	MapScene (BorderPane root, int height, int width,Button bFwd, Button bBack, Button bHome, UpstreamDataSource uds) {
 		super(root, width, height);
 		this.root = root;
 		this.uds = uds;
@@ -65,18 +65,18 @@ class MapScene extends Scene {
 		this.height = height;
 		this.logo = new Label("FreshAir");
 		this.logo.setFont(Font.font("Simplex", javafx.scene.text.FontWeight.LIGHT, javafx.scene.text.FontPosture.ITALIC, 10));
-		this.city = new TextField(pt[0]);
-		this.province = new TextField(pt[1]);
-		this.country = new TextField(pt[2]);
 
 		this.bHome.setGraphic( new ImageView ( new Image(getClass().getResource("home.png").toExternalForm(),20,20,true,true)) ); 
 		this.bBack.setGraphic( new ImageView ( new Image(getClass().getResource("bck.png").toExternalForm(),20,20,true,true)) ); 
 		this.bFwd.setGraphic( new ImageView ( new Image(getClass().getResource("fwd.png").toExternalForm(),20,20,true,true)) ); 
-		
-		this.setup();
+	
 	};
+	public void setup(String[] pt) {
 
-	public void setup() {
+		this.city = new TextField(pt[0]);
+		this.province = new TextField(pt[1]);
+		this.country = new TextField(pt[2]);
+
 		//TopRow
 		Label topLbl = new Label("FreshAir® - Clean Air Map!");
 		topLbl.setFont(Font.font("Simplex", javafx.scene.text.FontWeight.BOLD, javafx.scene.text.FontPosture.ITALIC, 20));
@@ -104,9 +104,9 @@ class MapScene extends Scene {
 		
 		Label lbl_weather = new Label("Weather:");
 		lbl_weather.setFont(Font.font("Simplex", javafx.scene.text.FontWeight.BOLD, javafx.scene.text.FontPosture.ITALIC, 20));
-		Label wind = new Label (String.valueOf(uds.getWind()).concat(" knots"));
+		Label wind = new Label (String.valueOf(uds.getWind()).concat(" m/s"));
 		wind.setFont(Font.font("Simplex", javafx.scene.text.FontWeight.BOLD, javafx.scene.text.FontPosture.ITALIC, 25));
-		Label precip = new Label (String.valueOf(uds.getPrecip()).concat("% chance of rain."));
+		Label precip = new Label (String.valueOf(uds.getPrecip()).concat(" Atmospheric Pressure (HPA)"));
 		precip.setFont(Font.font("Simplex", javafx.scene.text.FontWeight.BOLD, javafx.scene.text.FontPosture.ITALIC, 25));
 		
 		Label lbl_pollution = new Label("Pollution");
